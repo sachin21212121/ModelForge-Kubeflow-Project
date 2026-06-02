@@ -1,0 +1,32 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python Virtual Environment
+venv/
+.venv/
+env/
+ENV/
+*.pyc
+__pycache__/
+
+# MLflow & Local ML Runs Data
+mlruns/
+mlflow.db
+pipeline/models/*.pkl
+pipeline/models/*.json
+pipeline/data/*.json
+pipeline/data/baseline_features.json
+pipeline/data/drift_status.json
+
+# IDE & OS files
+.DS_Store
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp

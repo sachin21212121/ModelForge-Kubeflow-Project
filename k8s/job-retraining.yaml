@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: modelforge-retraining-job
+  namespace: modelforge
+  labels:
+    job-name: retraining
+spec:
+  template:
+    metadata:
+      labels:
+        app: modelforge-retraining
+    spec:
+      containers:
+        - name: training-runner
+          image: sachin2223/modelforge:latest
+          imagePullPolicy: Always
+          command: ["python", "pipeline/train.py"]
+          env:
+            - name: MLFLOW_TRACKING_URI
+              value: "http://mlflow-service.modelforge.svc.cluster.local:5000"
+          args: ["--n-estimators", "150", "--max-depth", "7"]
+          resources:
+            limits:
+              cpu: "2"
+              memory: 2Gi
+            requests:
+              cpu: "500m"
+              memory: 512Mi
+      restartPolicy: OnFailure
+  backoffLimit: 2

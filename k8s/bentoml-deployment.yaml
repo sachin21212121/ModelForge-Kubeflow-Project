@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bentoml-serving-deployment
+  namespace: modelforge
+  labels:
+    app: modelforge-serving
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: modelforge-serving
+  template:
+    metadata:
+      labels:
+        app: modelforge-serving
+    spec:
+      containers:
+        - name: serving-api
+          image: sachin2223/modelforge:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+              name: http
+          env:
+            - name: MLFLOW_TRACKING_URI
+              value: "http://mlflow-service.modelforge.svc.cluster.local:5000"
+          resources:
+            limits:
+              cpu: "1"
+              memory: 1Gi
+            requests:
+              cpu: "200m"
+              memory: 256Mi
+          readinessProbe:
+            httpGet:
+              path: /livez
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /livez
+              port: 3000
+            initialDelaySeconds: 20
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: modelforge-serving-service
+  namespace: modelforge
+spec:
+  selector:
+    app: modelforge-serving
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: ClusterIP

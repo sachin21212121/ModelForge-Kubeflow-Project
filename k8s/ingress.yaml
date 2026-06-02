@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: modelforge-ingress
+  namespace: modelforge
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - host: modelforge.local
+      http:
+        paths:
+          - path: /predict(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: modelforge-serving-service
+                port:
+                  number: 80
+          - path: /mlflow(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: mlflow-service
+                port:
+                  number: 5000
