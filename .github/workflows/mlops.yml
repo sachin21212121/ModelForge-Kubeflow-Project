@@ -37,20 +37,22 @@ jobs:
           cache-to: type=registry,ref=sachin2223/modelforge:buildcache,mode=max
 
       # 5. Set up Kubectl context (for deployment to your cluster)
-      - name: Set up Kubeconfig
-        uses: azure/k8s-set-context@v3
-        with:
-          method: kubeconfig
-          kubeconfig: ${{ secrets.KUBECONFIG_DATA }}
+      # Note: Commented out because the Kind cluster is running locally on 127.0.0.1
+      # - name: Set up Kubeconfig
+      #   uses: azure/k8s-set-context@v3
+      #   with:
+      #     method: kubeconfig
+      #     kubeconfig: ${{ secrets.KUBECONFIG_DATA }}
 
       # 6. Deploy Manifests to cluster
-      - name: Deploy Manifests
-        run: |
-          kubectl apply -f k8s/
+      # - name: Deploy Manifests
+      #   run: |
+      #     kubectl apply -f k8s/
           
       # 7. Force Run Retraining Job to update model version
-      - name: Trigger Retraining Job
-        run: |
-          # Delete existing job if it exists to allow re-creation
-          kubectl delete job modelforge-retraining-job -n modelforge --ignore-not-found=true
-          kubectl create -f k8s/job-retraining.yaml
+      # - name: Trigger Retraining Job
+      #   run: |
+      #     # Delete existing job if it exists to allow re-creation
+      #     kubectl delete job modelforge-retraining-job -n modelforge --ignore-not-found=true
+      #     kubectl create -f k8s/job-retraining.yaml
+
